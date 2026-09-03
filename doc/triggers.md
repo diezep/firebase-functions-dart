@@ -142,6 +142,24 @@ firebase.pubsub.onMessagePublished(
 );
 ```
 
+### Retrying Failed Executions
+
+All event-handling triggers (Pub/Sub, Firestore, Realtime Database, Storage,
+Remote Config, Eventarc, Test Lab, and Firebase Alerts) accept a `retry`
+option. When set to `true`, Cloud Functions redelivers the triggering event
+until the function succeeds or the maximum retry time elapses. It defaults to
+`false`.
+
+```dart
+firebase.pubsub.onMessagePublished(
+  topic: 'my-topic',
+  options: const PubSubOptions(retry: Retry(true)),
+  (event) async {
+    // ...
+  },
+);
+```
+
 ## Firestore Triggers
 
 ```dart

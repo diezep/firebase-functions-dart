@@ -79,6 +79,87 @@ final globalOptions = new GlobalOptions(
       expect(endpoint['timeoutSeconds'], isNull);
     });
   });
+
+  group('generateManifestYaml event trigger retry', () {
+    test('Pub/Sub event trigger defaults retry to false', () {
+      final yaml = generateManifestYaml({}, {
+        'onMessagePublished': EndpointSpec(
+          name: 'onMessagePublished',
+          type: 'pubsub',
+          topic: 'my-topic',
+        ),
+      });
+
+      expect(
+        loadYaml(yaml),
+        containsPair(
+          'endpoints',
+          containsPair(
+            'onmessagepublished',
+            containsPair('eventTrigger', containsPair('retry', isFalse)),
+          ),
+        ),
+      );
+    });
+
+    test('Pub/Sub event trigger honors retry: true', () {
+      final options = _initializerFor('''
+final options = new PubSubOptions(
+  retry: Retry(true),
+);
+''', 'options');
+
+      final yaml = generateManifestYaml({}, {
+        'onMessagePublished': EndpointSpec(
+          name: 'onMessagePublished',
+          type: 'pubsub',
+          topic: 'my-topic',
+          options: options,
+        ),
+      });
+
+      expect(
+        loadYaml(yaml),
+        containsPair(
+          'endpoints',
+          containsPair(
+            'onmessagepublished',
+            containsPair('eventTrigger', containsPair('retry', isTrue)),
+          ),
+        ),
+      );
+    });
+
+    test('Firestore event trigger honors retry: true', () {
+      final options = _initializerFor('''
+final options = new DocumentOptions(
+  document: 'users/{userId}',
+  retry: Retry(true),
+);
+''', 'options');
+
+      final yaml = generateManifestYaml({}, {
+        'onDocumentCreated': EndpointSpec(
+          name: 'onDocumentCreated',
+          type: 'firestore',
+          firestoreEventType: 'onDocumentCreated',
+          documentPath: 'users/{userId}',
+          options: options,
+        ),
+      });
+
+      expect(
+        loadYaml(yaml),
+        containsPair(
+          'endpoints',
+          containsPair(
+            'ondocumentcreated',
+            containsPair('eventTrigger', containsPair('retry', isTrue)),
+          ),
+        ),
+      );
+    });
+  });
 }
 
 InstanceCreationExpression _initializerFor(String source, String name) {
