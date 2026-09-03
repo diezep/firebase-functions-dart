@@ -89,17 +89,12 @@ final globalOptions = new GlobalOptions(
           topic: 'my-topic',
         ),
       });
+      final manifest = loadYaml(yaml) as YamlMap;
+      final endpoint =
+          (manifest['endpoints'] as YamlMap)['onmessagepublished'] as YamlMap;
+      final eventTrigger = endpoint['eventTrigger'] as YamlMap;
 
-      expect(
-        loadYaml(yaml),
-        containsPair(
-          'endpoints',
-          containsPair(
-            'onmessagepublished',
-            containsPair('eventTrigger', containsPair('retry', isFalse)),
-          ),
-        ),
-      );
+      expect(eventTrigger['retry'], isFalse);
     });
 
     test('Pub/Sub event trigger honors retry: true', () {
@@ -117,17 +112,12 @@ final options = new PubSubOptions(
           options: options,
         ),
       });
+      final manifest = loadYaml(yaml) as YamlMap;
+      final endpoint =
+          (manifest['endpoints'] as YamlMap)['onmessagepublished'] as YamlMap;
+      final eventTrigger = endpoint['eventTrigger'] as YamlMap;
 
-      expect(
-        loadYaml(yaml),
-        containsPair(
-          'endpoints',
-          containsPair(
-            'onmessagepublished',
-            containsPair('eventTrigger', containsPair('retry', isTrue)),
-          ),
-        ),
-      );
+      expect(eventTrigger['retry'], isTrue);
     });
 
     test('Firestore event trigger honors retry: true', () {
@@ -147,17 +137,12 @@ final options = new DocumentOptions(
           options: options,
         ),
       });
+      final manifest = loadYaml(yaml) as YamlMap;
+      final endpoint =
+          (manifest['endpoints'] as YamlMap)['ondocumentcreated'] as YamlMap;
+      final eventTrigger = endpoint['eventTrigger'] as YamlMap;
 
-      expect(
-        loadYaml(yaml),
-        containsPair(
-          'endpoints',
-          containsPair(
-            'ondocumentcreated',
-            containsPair('eventTrigger', containsPair('retry', isTrue)),
-          ),
-        ),
-      );
+      expect(eventTrigger['retry'], isTrue);
     });
   });
 }
