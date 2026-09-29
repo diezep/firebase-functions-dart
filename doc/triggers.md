@@ -146,19 +146,12 @@ firebase.pubsub.onMessagePublished(
 
 All event-handling triggers (Pub/Sub, Firestore, Realtime Database, Storage,
 Remote Config, Eventarc, Test Lab, and Firebase Alerts) accept a `retry`
-option. When set to `true`, Cloud Functions redelivers the triggering event
-until the function succeeds or the maximum retry time elapses. It defaults to
-`false`.
+option, which is written to `eventTrigger.retry` in the generated manifest
+and defaults to `false`.
 
-```dart
-firebase.pubsub.onMessagePublished(
-  topic: 'my-topic',
-  options: const PubSubOptions(retry: Retry(true)),
-  (event) async {
-    // ...
-  },
-);
-```
+**Deployment support is pending.** The option currently configures the manifest
+only. Deploying Dart event functions with `retry: true` requires Firebase CLI
+support that is not yet available.
 
 ## Firestore Triggers
 
