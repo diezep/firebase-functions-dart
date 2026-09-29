@@ -130,7 +130,7 @@ class GlobalOptions {
 /// Additional options available on any event-handling function.
 ///
 /// Matches the `EventHandlerOptions` interface from the Node.js SDK.
-class EventHandlerOptions extends GlobalOptions {
+abstract class EventHandlerOptions extends GlobalOptions {
   const EventHandlerOptions({
     this.retry,
     super.concurrency,
